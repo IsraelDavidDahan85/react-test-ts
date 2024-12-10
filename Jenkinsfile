@@ -38,17 +38,17 @@ pipeline {
                     sh '''
                     docker build -t react-test-ts .
                     '''
+                }
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh 'docker login -u $DOCKER_USER -p $DOCKER_PASS'
                     sh 'docker tag react-test-ts $DOCKER_USER/react-test-ts:$BUILD_NUMBER'
+                    sh 'docker tag react-test-ts $DOCKER_USER/react-test-ts:latest'
+
                     sh 'docker push $DOCKER_USER/react-test-ts:$BUILD_NUMBER'
+                    sh 'docker push $DOCKER_USER/react-test-ts:latest'
                 }
 
-                },
-            
-
-            },
-            
+            }
         }
 
 
