@@ -1,12 +1,10 @@
-FROM node:23 as builder
+FROM node:23 AS builder
 
 WORKDIR /usr/src/app
 
-COPY ./ /usr/src/app
+COPY . /usr/src/app
 
-ENV NODE_ENV=production
-
-RUN npm install
+RUN npm ci
 RUN npm run build
 
 
