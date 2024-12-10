@@ -30,6 +30,9 @@ pipeline {
             }
         }
         stage('Build') {
+            agent {
+                label "docker"
+            }
             steps {
                 script {
                     sh 'docker build -t react-test-ts .'
