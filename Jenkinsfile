@@ -54,21 +54,17 @@ pipeline {
             steps {
                 script {
                     // save private key to file 
-                    withCredentials([sshUserPrivateKey(credentialsId: 'github', keyFileVariable: 'privateKey')]) {
-                        writeFile file: 'key', text: privateKey
+                    withCredentials([usernamePassword(credentialsId: 'github-token', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                       sh '''
+                            git config --global url."https://${USERNAME}:${PASSWORD}@github.com/".insteadOf https://github.com/
+                            git config --global user.email "israeldaviddahan@gmail.com"
+                            git config --global user.name "Israel David Dahan"
+
+                            git tag -a v1.0.$BUILD_NUMBER -m "Version 1.0.$BUILD_NUMBER"
+                            git push origin v1.0.$BUILD_NUMBER
+                        '''
+                        
                     }
-
-                    // add github to known hosts
-                    sh 'ssh-keyscan github.com >> ~/.ssh/known_hosts'
-
-                    // tag the commit
-                    sh '''
-                    git config --global user.email "israeldaviddahan@gmail.com"
-                    git config --global user.name "Israel David Dahan"
-
-                    git tag -a v1.0.$BUILD_NUMBER -m "Version 1.0.$BUILD_NUMBER"
-                    git push origin v1.0.$BUILD_NUMBER
-                    '''
                 }
             }
         }
