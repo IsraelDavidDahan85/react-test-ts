@@ -35,7 +35,14 @@ pipeline {
             }
             steps {
                 script {
-                    sh 'docker build -t react-test-ts .'
+                    sh '''
+                    docker build -t react-test-ts .
+                    withDockerRegistry([credentialsId: 'dockerhub', url: 'https://index.docker.io/v1/']) {
+                        sh 'docker login -u $DOCKER_USER -p $DOCKER_PASS'
+                        sh 'docker tag react-test-ts $DOCKER_USER/react-test-ts'
+                        sh 'docker push $DOCKER_USER/react-test-ts'
+                    }
+                    '''
                 }
             }
         }
