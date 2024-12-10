@@ -6,7 +6,7 @@ COPY ./ /usr/src/app
 
 ENV NODE_ENV=production
 
-RUN npm ci
+RUN npm install
 RUN npm run build
 
 
