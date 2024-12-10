@@ -50,6 +50,16 @@ pipeline {
 
             }
         }
+        stage('Tag') {
+            steps {
+                script {
+                    sh '''
+                    git tag -a v1.0.$BUILD_NUMBER -m "Version 1.0.$BUILD_NUMBER"
+                    git push origin v1.0.$BUILD_NUMBER
+                    '''
+                }
+            }
+        }
 
 
     }
