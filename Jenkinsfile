@@ -2,9 +2,12 @@ pipeline {
     agent {
         label "npm-node-agent"
     }
-
+    environment {
+        def scannerHome = tool 'SonarScanner';
+        def node_key_proj = credentials('sonar-proj-key-node')
+        def node_token = credentials('sonar-token-node')
+    }
     stages {
-
         stage('Git SCM') {
             steps {
                 // Get some code from a GitHub repository
@@ -21,6 +24,22 @@ pipeline {
                 }
             }
         }
+                stage('SonarQube Analysis') {
+            steps {
+                script {
+                    withSonarQubeEnv() {
+                        sh 'echo "SonarQube Analysis Done [${scannerHome}]"'
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=${node_key_proj} -Dsonar.login=${node_token}"
+                        //     "${scannerHome}/bin/sonar-scanner" \
+                        //     -Dsonar.projectKey=ReactBuild \
+                        //     -Dsonar.sources=. \
+                        //     '''
+                    }
+  
+                }
+            }
+        }
+
         stage('Test') {
             steps {
                 script {
@@ -48,23 +67,6 @@ pipeline {
                     sh 'docker push $DOCKER_USER/react-test-ts:latest'
                 }
 
-            }
-        }
-        stage('SonarQube Analysis') {
-            steps {
-                script {
-                    def scannerHome = tool 'SonarScanner';
-                    withSonarQubeEnv() {
-                        sh 'echo "SonarQube Analysis Done [${scannerHome}]"'
-                        sh "${scannerHome}/bin/sonar-scanner"
-                        // sh '''
-                        //     "${scannerHome}/bin/sonar-scanner" \
-                        //     -Dsonar.projectKey=ReactBuild \
-                        //     -Dsonar.sources=. \
-                        //     '''
-                    }
-  
-                }
             }
         }
         stage('Tag') {
