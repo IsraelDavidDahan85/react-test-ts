@@ -57,11 +57,11 @@ pipeline {
                     withSonarQubeEnv() {
                         sh 'echo "SonarQube Analysis Done [${scannerHome}]"'
                         sh "${scannerHome}/bin/sonar-scanner"
-                        sh '''
-                            "${scannerHome}/bin/sonar-scanner" \
-                            -Dsonar.projectKey=ReactBuild \
-                            -Dsonar.sources=. \
-                            '''
+                        // sh '''
+                        //     "${scannerHome}/bin/sonar-scanner" \
+                        //     -Dsonar.projectKey=ReactBuild \
+                        //     -Dsonar.sources=. \
+                        //     '''
                     }
   
                 }
