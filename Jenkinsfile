@@ -51,9 +51,18 @@ pipeline {
             }
         }
         stage('SonarQube Analysis') {
-            def scannerHome = tool 'SonarScanner';
-            withSonarQubeEnv() {
-            sh "${scannerHome}/bin/sonar-scanner"
+            // def scannerHome = tool 'SonarScanner';
+            // withSonarQubeEnv() {
+            // sh "${scannerHome}/bin/sonar-scanner"
+            // }
+
+            steps {
+                sh 'echo "SonarQube Analysis Done"'
+                "${scannerHome}/bin/sonar-scanner" \
+                -Dsonar.projectKey=node \
+                -Dsonar.sources=. \
+                -Dsonar.host.url=http://localhost:9001 \
+                -Dsonar.login=sqp_4bbb613cda9b6ea815530b4927184fd5a3ad7a28
             }
         }
         stage('Tag') {
